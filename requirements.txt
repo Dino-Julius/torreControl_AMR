@@ -3,3 +3,6 @@
 # azure-monitor-opentelemetry
 
 azure-functions
+pandas
+scikit-learn
+numpy

@@ -3,10 +3,18 @@ import json
 import math
 import heapq
 import logging
+import pandas as pd
+import numpy as np
+import re 
+from sklearn.linear_model import LinearRegression
+
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 
+# ---------------------------------------------------------
+# FUNCIÓN 1: Cálculo de Ruta Óptima (Utilizando A*)
+# ---------------------------------------------------------
 @app.route(route="calculate_route", methods=["POST"])
 def calculate_route(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Procesando solicitud de ruta para AMR.')
@@ -100,3 +108,46 @@ def calculate_route(req: func.HttpRequest) -> func.HttpResponse:
 
     except Exception as e:
         return func.HttpResponse(f"Error interno: {str(e)}", status_code=500)
+    
+# ---------------------------------------------------------
+# FUNCIÓN 2: Predicción de ETA
+# ---------------------------------------------------------
+@app.route(route="predict_eta", methods=["POST"])
+def predict_eta(req: func.HttpRequest) -> func.HttpResponse:
+    try:
+        req_body = req.get_json()
+        historial = req_body.get('historial')
+        mision_actual = req_body.get('mision')
+        
+        # Si faltan datos, lanzamos un error para ir al bloque 'except'
+        if not historial or not mision_actual:
+            raise ValueError("Datos incompletos")
+        
+        df = pd.DataFrame(historial)
+        df['Nodo_Dest_Num'] = df['Nodo_Destino'].str.extract('(\d+)').astype(int)
+        X = df[['Nodo_Dest_Num', 'Robots_Activos']].values
+        y = df['Duracion_Segundos'].values
+        model = LinearRegression().fit(X, y)
+        
+        nodo_dest_num = int(re.search(r'\d+', mision_actual['Nodo_Destino']).group())
+        input_data = np.array([[nodo_dest_num, mision_actual['Robots_Activos']]])
+        eta = model.predict(input_data)[0]
+        
+        return func.HttpResponse(
+            json.dumps({
+                "eta_segundos": round(float(eta), 2),
+                "error": False
+            }),
+            mimetype="application/json",
+            status_code=200
+        )
+    except Exception as e:
+        return func.HttpResponse(
+            json.dumps({
+                "eta_segundos": -1,
+                "error": True,
+                "mensaje": str(e)
+            }),
+            mimetype="application/json",
+            status_code=200
+        )
