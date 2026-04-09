@@ -22,17 +22,15 @@
           }
         },
         "url": {
-          "raw": "http://localhost:7071/api/calculate_route",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "7071",
+          "raw": "{{local_base_url}}/api/calculate_route",
+          "host": ["{{local_base_url}}"],
           "path": ["api", "calculate_route"]
         }
       },
       "response": []
     },
     {
-      "name": "LocalTest Predict ETA",
+      "name": "AzureTest Calculate Route",
       "request": {
         "method": "POST",
         "header": [],
@@ -46,11 +44,65 @@
           }
         },
         "url": {
-          "raw": "http://localhost:7071/api/predict_eta",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "7071",
+          "raw": "{{azure_base_url}}/api/calculate_route?code={{azure_function_key}}",
+          "host": ["{{azure_base_url}}"],
+          "path": ["api", "calculate_route"],
+          "query": [
+            {
+              "key": "code",
+              "value": "{{azure_function_key}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "LocalTest Predict ETA",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"historial\": [\n        {\n            \"Nodo_Destino\": \"N1\",\n            \"Robots_Activos\": 1,\n            \"Duracion_Segundos\": 20\n        },\n        {\n            \"Nodo_Destino\": \"N1\",\n            \"Robots_Activos\": 3,\n            \"Duracion_Segundos\": 35\n        },\n        {\n            \"Nodo_Destino\": \"N2\",\n            \"Robots_Activos\": 1,\n            \"Duracion_Segundos\": 50\n        },\n        {\n            \"Nodo_Destino\": \"N2\",\n            \"Robots_Activos\": 4,\n            \"Duracion_Segundos\": 75\n        },\n        {\n            \"Nodo_Destino\": \"N3\",\n            \"Robots_Activos\": 2,\n            \"Duracion_Segundos\": 90\n        }\n    ],\n    \"mision\": {\n        \"Nodo_Destino\": \"N2\",\n        \"Robots_Activos\": 2\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{local_base_url}}/api/predict_eta",
+          "host": ["{{local_base_url}}"],
           "path": ["api", "predict_eta"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AzureTest Predict ETA",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"historial\": [\n        {\n            \"Nodo_Destino\": \"N1\",\n            \"Robots_Activos\": 1,\n            \"Duracion_Segundos\": 20\n        },\n        {\n            \"Nodo_Destino\": \"N1\",\n            \"Robots_Activos\": 3,\n            \"Duracion_Segundos\": 35\n        },\n        {\n            \"Nodo_Destino\": \"N2\",\n            \"Robots_Activos\": 1,\n            \"Duracion_Segundos\": 50\n        },\n        {\n            \"Nodo_Destino\": \"N2\",\n            \"Robots_Activos\": 4,\n            \"Duracion_Segundos\": 75\n        },\n        {\n            \"Nodo_Destino\": \"N3\",\n            \"Robots_Activos\": 2,\n            \"Duracion_Segundos\": 90\n        }\n    ],\n    \"mision\": {\n        \"Nodo_Destino\": \"N2\",\n        \"Robots_Activos\": 2\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{azure_base_url}}/api/predict_eta?code={{azure_function_key}}",
+          "host": ["{{azure_base_url}}"],
+          "path": ["api", "predict_eta"],
+          "query": [
+            {
+              "key": "code",
+              "value": "{{azure_function_key}}"
+            }
+          ]
         }
       },
       "response": []

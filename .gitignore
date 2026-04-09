@@ -139,3 +139,9 @@ __azurite_db*__.json
 
 # .idea/
 .idea/
+
+# Postman exports with local-only secrets
+*.postman_environment.json
+*.postman_environment.*.json
+!*.postman_environment.template.json
+*.postman_globals.json
